@@ -1,0 +1,2 @@
+# GerejaPentakosta
+Gereja Pentakosta Umum
