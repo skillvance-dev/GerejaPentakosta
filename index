@@ -1,0 +1,1898 @@
+<!doctype html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Gereja Pentakosta</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Nunito', sans-serif; }
+    body { box-sizing: border-box; }
+    
+    .gradient-primary { background: linear-gradient(135deg, #7c2d12 0%, #b45309 100%); }
+    .gradient-secondary { background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); }
+    
+    .nav-active { 
+      background: linear-gradient(135deg, #7c2d12 0%, #b45309 100%); 
+      color: white; 
+      box-shadow: 0 4px 12px rgba(124, 45, 18, 0.2);
+    }
+    
+    .card-hover:hover { 
+      transform: translateY(-4px); 
+      box-shadow: 0 12px 24px rgba(124, 45, 18, 0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .fade-in { 
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn { 
+      from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+      } 
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      } 
+    }
+    
+    .btn-primary { 
+      background: linear-gradient(135deg, #7c2d12 0%, #b45309 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover { 
+      background: linear-gradient(135deg, #b45309 0%, #d97706 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(124, 45, 18, 0.3);
+    }
+    
+    .btn-secondary { 
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover { 
+      background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
+      transform: translateY(-2px);
+    }
+    
+    .tab-nav { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 8px; 
+      align-items: center;
+    }
+    
+    .tab-nav button { 
+      padding: 10px 16px; 
+      border-radius: 8px; 
+      font-weight: 600; 
+      font-size: 14px; 
+      transition: all 0.3s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    
+    .tab-nav button:hover:not(.nav-active) {
+      background-color: #f3f4f6;
+      transform: translateY(-2px);
+    }
+
+    .module-content {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+      border: 1px solid #e5e7eb;
+    }
+
+    .stat-card:hover {
+      border-color: #7c2d12;
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+    }
+
+    .biodata-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-left: 4px solid #b45309;
+      transition: all 0.3s ease;
+    }
+
+    .biodata-card:hover {
+      box-shadow: 0 8px 16px rgba(124, 45, 18, 0.1);
+      border-left-color: #7c2d12;
+    }
+
+    .biodata-row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .biodata-row:last-child {
+      border-bottom: none;
+    }
+
+    .biodata-label {
+      font-weight: 600;
+      color: #7c2d12;
+      font-size: 0.875rem;
+    }
+
+    .biodata-value {
+      color: #374151;
+      font-size: 0.875rem;
+    }
+
+    .attendance-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 150px 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .attendance-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    @media print {
+      body { background: white !important; }
+      .btn-primary, .btn-secondary, button, .nav-active, .tab-nav { display: none !important; }
+      .report-content { break-inside: avoid; }
+      .report-table { width: 100%; border-collapse: collapse; }
+      .report-table th, .report-table td { border: 1px solid #000; padding: 8px; text-align: left; }
+      .report-table th { background: #f3f4f6 !important; font-weight: bold; }
+    }
+
+    @media (max-width: 768px) {
+      .tab-nav {
+        gap: 4px;
+      }
+      
+      .tab-nav button {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .biodata-row {
+        grid-template-columns: 120px 1fr;
+      }
+
+      .attendance-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-orange-50 via-white to-amber-50 overflow-auto">
+  <div id="app" class="h-full w-full">
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="min-h-full flex items-center justify-center p-4 bg-gradient-to-br from-orange-50 to-amber-50">
+      <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full fade-in border border-orange-100">
+        <div class="text-center mb-8">
+          <div class="text-6xl mb-4 animate-bounce">⛪</div>
+          <h1 class="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent mb-2">
+            Gereja Pentakosta
+          </h1>
+          <p class="text-gray-500 text-sm">Sistem Manajemen Gereja Terpadu</p>
+        </div>
+        
+        <form id="login-form" class="space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">👤 Username</label>
+            <input type="text" id="login-username" required placeholder="Masukkan username" 
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">🔐 Password</label>
+            <input type="password" id="login-password" required placeholder="Masukkan password" 
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all">
+          </div>
+          
+          <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg font-bold mt-6 text-lg">
+            🔓 Masuk
+          </button>
+        </form>
+        
+        <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200">
+          <p class="text-xs font-semibold text-gray-700 mb-2">📋 Demo Account:</p>
+          <p class="text-xs text-gray-600 mt-1"><strong>👨‍💼 Admin:</strong> admin / admin123</p>
+          <p class="text-xs text-gray-600"><strong>👤 User:</strong> user / user123</p>
+        </div>
+        
+        <div id="login-error" class="mt-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg hidden text-center border border-red-200">
+          ⚠️ Username atau password salah
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="dashboard" class="hidden min-h-full">
+      <!-- Header -->
+      <header class="sticky top-0 z-40 gradient-primary text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 py-5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl border-2 border-white/30 backdrop-blur-sm">
+                ⛪
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold">Gereja Pentakosta</h1>
+                <p class="text-orange-200 text-sm font-medium">Sistem Manajemen Terpadu</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-6">
+              <div class="text-right hidden md:block">
+                <p id="user-name" class="font-semibold text-lg">User</p>
+                <p id="user-level" class="text-xs text-orange-200 font-medium">Level Akses</p>
+              </div>
+              <button type="button" id="logout-btn" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-all font-semibold backdrop-blur-sm border border-white/30">
+                🚪 Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Cabang Selector -->
+      <div class="sticky top-16 z-30 glass-effect backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="text-sm font-bold text-gray-800">📍 Pilih Cabang:</span>
+            <div id="cabang-selector" class="flex gap-2 flex-wrap"></div>
+            <button id="add-cabang-btn" type="button" onclick="showAddCabangModal()" 
+              class="ml-auto btn-secondary text-white px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm hidden">
+              ➕ Tambah Cabang
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <div class="sticky top-32 z-30 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+          <div class="tab-nav" id="main-nav">
+            <button type="button" onclick="switchModule('beranda')" data-module="beranda" class="nav-active text-white">🏠 Beranda</button>
+            <button type="button" onclick="switchModule('pengerja')" data-module="pengerja" class="bg-gray-100 text-gray-700">🙏 Pengerja</button>
+            <button type="button" onclick="switchModule('jemaat')" data-module="jemaat" class="bg-gray-100 text-gray-700">👥 Jemaat</button>
+            <button type="button" onclick="switchModule('kegiatan')" data-module="kegiatan" class="bg-gray-100 text-gray-700">📅 Kegiatan</button>
+            <button type="button" onclick="switchModule('keuangan')" data-module="keuangan" class="bg-gray-100 text-gray-700">💰 Keuangan</button>
+            <button type="button" onclick="switchModule('surat')" data-module="surat" class="bg-gray-100 text-gray-700">📨 Surat</button>
+            <button type="button" onclick="switchModule('kehadiran')" data-module="kehadiran" class="bg-gray-100 text-gray-700">✅ Kehadiran</button>
+            <button type="button" onclick="switchModule('search')" data-module="search" class="bg-gray-100 text-gray-700">🔍 Cari</button>
+            <button type="button" id="users-tab" onclick="switchModule('users')" data-module="users" class="bg-gray-100 text-gray-700 hidden">👨‍💼 User</button>
+            <button type="button" id="report-tab" onclick="switchModule('report')" data-module="report" class="bg-gray-100 text-gray-700 hidden">🖨️ Report</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="max-w-7xl mx-auto px-6 py-6 pb-12">
+        <!-- BERANDA MODULE -->
+        <div id="beranda-module" class="module-content">
+          <!-- Stats Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <div class="stat-card rounded-2xl p-6 card-hover">
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium mb-2">Total Pengerja</p>
+                  <p id="stat-pengerja" class="text-4xl font-bold text-orange-600">0</p>
+                </div>
+                <div class="text-4xl">🙏</div>
+              </div>
+            </div>
+
+            <div class="stat-card rounded-2xl p-6 card-hover">
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium mb-2">Total Jemaat</p>
+                  <p id="stat-jemaat" class="text-4xl font-bold text-green-600">0</p>
+                </div>
+                <div class="text-4xl">👨‍👩‍👧‍👦</div>
+              </div>
+            </div>
+
+            <div class="stat-card rounded-2xl p-6 card-hover">
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium mb-2">Dana Kas</p>
+                  <p id="stat-dana" class="text-3xl font-bold text-purple-600">Rp 0</p>
+                </div>
+                <div class="text-4xl">💰</div>
+              </div>
+            </div>
+
+            <div class="stat-card rounded-2xl p-6 card-hover">
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-gray-600 text-sm font-medium mb-2">Surat Bulan Ini</p>
+                  <p id="stat-surat" class="text-4xl font-bold text-blue-600">0</p>
+                </div>
+                <div class="text-4xl">📨</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+              <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2">
+                <span class="text-2xl">📅</span> Kegiatan Mendatang
+              </h3>
+              <div id="upcoming-activities" class="space-y-3 max-h-96 overflow-y-auto">
+                <div class="text-center py-8 text-gray-400">Tidak ada kegiatan</div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+              <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2">
+                <span class="text-2xl">📊</span> Ringkasan Kehadiran Ibadah
+              </h3>
+              <div id="attendance-summary" class="space-y-2 max-h-96 overflow-y-auto">
+                <div class="text-center py-8 text-gray-400">Belum ada data kehadiran</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PENGERJA MODULE -->
+        <div id="pengerja-module" class="module-content hidden">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+            <div class="stat-card rounded-xl p-4">
+              <p class="text-gray-600 text-xs font-medium">Total</p>
+              <p id="peng-total" class="text-3xl font-bold text-orange-600 mt-1">0</p>
+            </div>
+            <div class="stat-card rounded-xl p-4">
+              <p class="text-gray-600 text-xs font-medium">Pendeta</p>
+              <p id="peng-pendeta" class="text-3xl font-bold text-orange-600 mt-1">0</p>
+            </div>
+            <div class="stat-card rounded-xl p-4">
+              <p class="text-gray-600 text-xs font-medium">Pendeta Muda</p>
+              <p id="peng-pendeta-muda" class="text-3xl font-bold text-orange-600 mt-1">0</p>
+            </div>
+            <div class="stat-card rounded-xl p-4">
+              <p class="text-gray-600 text-xs font-medium">Sintua</p>
+              <p id="peng-sintua" class="text-3xl font-bold text-orange-600 mt-1">0</p>
+            </div>
+            <div class="stat-card rounded-xl p-4">
+              <p class="text-gray-600 text-xs font-medium">Pembela Sidang</p>
+              <p id="peng-pembela" class="text-3xl font-bold text-orange-600 mt-1">0</p>
+            </div>
+          </div>
+
+          <div id="pengerja-form-container" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 mb-6 hidden">
+            <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">➕ Tambah Pengerja Baru</h3>
+            <form id="pengerja-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap *</label>
+                <input type="text" id="pk-nama" required placeholder="Nama lengkap" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Jabatan *</label>
+                <select id="pk-jabatan" required 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                  <option value="">Pilih Jabatan</option>
+                  <option value="Pendeta">Pendeta</option>
+                  <option value="Pendeta Muda">Pendeta Muda</option>
+                  <option value="Sintua">Sintua</option>
+                  <option value="Pembela Sidang">Pembela Sidang</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">No. Telepon</label>
+                <input type="tel" id="pk-telepon" placeholder="08xxxxxxxxxx" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div class="md:col-span-2 lg:col-span-3 flex gap-3 pt-2">
+                <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 flex-1">
+                  <span>💾</span> Simpan
+                </button>
+                <button type="button" onclick="resetPengerjaForm()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
+                  Batal
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div id="pengerja-list" class="space-y-4">
+            <div class="text-center py-12 text-gray-400">Tidak ada pengerja</div>
+          </div>
+        </div>
+
+        <!-- JEMAAT MODULE -->
+        <div id="jemaat-module" class="module-content hidden">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="stat-card rounded-xl p-4">
+              <p class="text-gray-600 text-xs font-medium">Total</p>
+              <p id="jem-total" class="text-3xl font-bold text-green-600 mt-1">0</p>
+            </div>
+            <div class="stat-card rounded-xl p-4">
+              <p class="text-gray-600 text-xs font-medium">Kaum Ibu</p>
+              <p id="jem-ibu" class="text-3xl font-bold text-green-600 mt-1">0</p>
+            </div>
+            <div class="stat-card rounded-xl p-4">
+              <p class="text-gray-600 text-xs font-medium">Kaum Bapak</p>
+              <p id="jem-bapak" class="text-3xl font-bold text-green-600 mt-1">0</p>
+            </div>
+            <div class="stat-card rounded-xl p-4">
+              <p class="text-gray-600 text-xs font-medium">Anak-anak</p>
+              <p id="jem-anak" class="text-3xl font-bold text-green-600 mt-1">0</p>
+            </div>
+          </div>
+
+          <div id="jemaat-form-container" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 mb-6 hidden">
+            <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">➕ Tambah Jemaat Baru</h3>
+            <form id="jemaat-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap *</label>
+                <input type="text" id="jm-nama" required placeholder="Nama lengkap" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">No. Telepon</label>
+                <input type="tel" id="jm-telepon" placeholder="08xxxxxxxxxx" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
+                <select id="jm-kategori" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                  <option value="Kaum Ibu">Kaum Ibu</option>
+                  <option value="Kaum Bapak">Kaum Bapak</option>
+                  <option value="Anak-anak">Anak-anak</option>
+                </select>
+              </div>
+              <div class="md:col-span-2 lg:col-span-3 flex gap-3 pt-2">
+                <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 flex-1">
+                  <span>💾</span> Simpan
+                </button>
+                <button type="button" onclick="resetJemaatForm()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
+                  Batal
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div id="jemaat-list" class="space-y-4">
+            <div class="text-center py-12 text-gray-400">Tidak ada jemaat</div>
+          </div>
+        </div>
+
+        <!-- KEGIATAN MODULE -->
+        <div id="kegiatan-module" class="module-content hidden">
+          <div id="kegiatan-form-container" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 mb-6 hidden">
+            <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">📅 Rencana Kegiatan</h3>
+            <form id="kegiatan-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Kegiatan *</label>
+                <input type="text" id="kg-jenis" required placeholder="Contoh: Ibadah Raya" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Kegiatan *</label>
+                <input type="date" id="kg-tanggal" required 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Anggaran (Rp)</label>
+                <input type="number" id="kg-dana" placeholder="0" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div class="md:col-span-2 lg:col-span-3 flex gap-3 pt-2">
+                <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 flex-1">
+                  <span>💾</span> Simpan
+                </button>
+                <button type="button" onclick="resetKegiatanForm()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
+                  Batal
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+            <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">📋 Daftar Kegiatan</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-orange-100 border-b-2 border-orange-300">
+                    <th class="px-4 py-3 text-left text-gray-800 font-bold">📅 Tanggal</th>
+                    <th class="px-4 py-3 text-left text-gray-800 font-bold">Jenis Kegiatan</th>
+                    <th class="px-4 py-3 text-right text-gray-800 font-bold">Anggaran</th>
+                    <th id="kegiatan-aksi-header" class="px-4 py-3 text-center text-gray-800 font-bold hidden">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="kegiatan-table" class="divide-y divide-gray-200">
+                  <tr><td class="px-4 py-6 text-center text-gray-400 col-span-4">Tidak ada kegiatan</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- KEUANGAN MODULE -->
+        <div id="keuangan-module" class="module-content hidden">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="stat-card rounded-2xl p-6 border-l-4 border-purple-500">
+              <p class="text-gray-600 text-sm font-medium mb-2">💰 Dana Kas Tersimpan</p>
+              <p id="keu-total-kas" class="text-4xl font-bold text-purple-600">Rp 0</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="border-r border-gray-200">
+                  <p class="text-gray-600 text-xs font-medium mb-2">✅ Persembahan Masuk</p>
+                  <p id="keu-masuk" class="text-3xl font-bold text-green-600">Rp 0</p>
+                </div>
+                <div>
+                  <p class="text-gray-600 text-xs font-medium mb-2">❌ Dana Keluar</p>
+                  <p id="keu-keluar" class="text-3xl font-bold text-red-600">Rp 0</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div id="keuangan-form-container" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hidden">
+              <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">💵 Dana Masuk</h3>
+              <form id="kas-form" class="space-y-4">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Jumlah (Rp) *</label>
+                  <input type="number" id="kas-jumlah" required min="0" placeholder="0" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Keterangan</label>
+                  <input type="text" id="kas-ket" placeholder="Misal: Sumbangan, Kolekta" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+                <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold w-full flex items-center justify-center gap-2">
+                  <span>💾</span> Simpan
+                </button>
+              </form>
+            </div>
+
+            <div id="keuangan-keluar-container" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hidden">
+              <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">🚪 Dana Keluar</h3>
+              <form id="keluar-form" class="space-y-4">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Jumlah (Rp) *</label>
+                  <input type="number" id="keluar-jumlah" required min="0" placeholder="0" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Keterangan</label>
+                  <input type="text" id="keluar-ket" placeholder="Misal: Operasional, Perbaikan" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+                <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold w-full flex items-center justify-center gap-2">
+                  <span>💾</span> Simpan
+                </button>
+              </form>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+              <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">📊 Statistik</h3>
+              <div id="persembahan-mingguan" class="space-y-3">
+                <div class="text-center py-6 text-gray-400">Belum ada data</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+            <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">📋 Riwayat Dana Keluar</h3>
+            <div id="dana-keluar-list" class="space-y-2">
+              <div class="text-center py-6 text-gray-400">Belum ada transaksi</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SURAT MODULE -->
+        <div id="surat-module" class="module-content hidden">
+          <div id="surat-form-container" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 mb-6 hidden">
+            <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">📨 Input Surat</h3>
+            <form id="surat-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nomor Surat *</label>
+                <input type="text" id="sr-nomor" required placeholder="No. Surat" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Surat *</label>
+                <input type="date" id="sr-tanggal" required 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Pengirim/Tujuan *</label>
+                <input type="text" id="sr-pengirim" required placeholder="Nama pengirim/tujuan" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div class="md:col-span-2 lg:col-span-3 flex gap-3 pt-2">
+                <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 flex-1">
+                  <span>💾</span> Simpan
+                </button>
+                <button type="button" onclick="resetSuratForm()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
+                  Batal
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div id="surat-list" class="space-y-3">
+            <div class="text-center py-12 text-gray-400">Tidak ada surat</div>
+          </div>
+        </div>
+
+        <!-- KEHADIRAN MODULE -->
+        <div id="kehadiran-module" class="module-content hidden">
+          <div id="kehadiran-form-container" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 mb-6 hidden">
+            <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">✅ Input Kehadiran Ibadah</h3>
+            <form id="kehadiran-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Ibadah *</label>
+                <select id="kh-jenis" required 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                  <option value="">Pilih Ibadah</option>
+                  <option value="Ibadah Raya">Ibadah Raya</option>
+                  <option value="Ibadah Tengah Minggu">Ibadah Tengah Minggu</option>
+                  <option value="Ibadah Kaum Ibu">Ibadah Kaum Ibu</option>
+                  <option value="Ibadah Kaum Bapak">Ibadah Kaum Bapak</option>
+                  <option value="Ibadah Sekolah Minggu">Ibadah Sekolah Minggu</option>
+                  <option value="Ibadah Kaum Remaja">Ibadah Kaum Remaja</option>
+                  <option value="Ibadah Kaum Muda">Ibadah Kaum Muda</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Ibadah *</label>
+                <input type="date" id="kh-tanggal" required 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Jumlah Hadir *</label>
+                <input type="number" id="kh-jumlah" required min="0" placeholder="0" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Persembahan (Rp)</label>
+                <input type="number" id="kh-persembahan" min="0" placeholder="0" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div class="md:col-span-2 lg:col-span-4 flex gap-3 pt-2">
+                <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 flex-1">
+                  <span>💾</span> Simpan
+                </button>
+                <button type="button" onclick="resetKehadiranForm()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
+                  Batal
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div id="kehadiran-list" class="space-y-3">
+            <div class="text-center py-12 text-gray-400">Tidak ada data kehadiran</div>
+          </div>
+        </div>
+
+        <!-- SEARCH MODULE -->
+        <div id="search-module" class="module-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+            <div class="lg:col-span-3 bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+              <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">
+                <span>🔍</span> Cari Data Per Cabang
+              </h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">📍 Pilih Cabang</label>
+                  <select id="search-cabang" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                    <option value="">Semua Cabang</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">📂 Tipe Data</label>
+                  <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" name="search-type" value="pengerja" class="w-4 h-4 text-orange-600 rounded">
+                      <span class="text-sm">🙏 Pengerja</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" name="search-type" value="jemaat" class="w-4 h-4 text-orange-600 rounded">
+                      <span class="text-sm">👥 Jemaat</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" name="search-type" value="kegiatan" class="w-4 h-4 text-orange-600 rounded">
+                      <span class="text-sm">📅 Kegiatan</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" name="search-type" value="surat" class="w-4 h-4 text-orange-600 rounded">
+                      <span class="text-sm">📨 Surat</span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">🔎 Cari Keyword</label>
+                  <input type="text" id="search-keyword" placeholder="Ketik nama, nomor, atau keterangan..." 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-6 shadow-md border border-orange-300 flex flex-col justify-center">
+              <p class="text-sm text-gray-700 font-medium mb-2">📊 Total Hasil</p>
+              <p id="search-result-count" class="text-5xl font-bold text-orange-600 mb-4">0</p>
+              <button type="button" onclick="resetSearchForm()" class="bg-white text-orange-600 px-4 py-2 rounded-lg font-semibold hover:bg-orange-50 transition">
+                🔄 Reset
+              </button>
+            </div>
+          </div>
+          <div id="search-results" class="space-y-3">
+            <div class="text-center py-12 text-gray-400">Belum ada pencarian</div>
+          </div>
+        </div>
+
+        <!-- USER MANAGEMENT MODULE -->
+        <div id="users-module" class="module-content hidden">
+          <div id="user-form-container" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 mb-6 hidden">
+            <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">👨‍💼 Tambah User Baru</h3>
+            <form id="user-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nama User *</label>
+                <input type="text" id="u-nama" required placeholder="Nama pengguna" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Username *</label>
+                <input type="text" id="u-username" required placeholder="Username unik" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Password *</label>
+                <input type="password" id="u-password" required placeholder="Password" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Level Akses *</label>
+                <select id="u-level" required 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                  <option value="user">👤 User</option>
+                  <option value="admin">👑 Admin</option>
+                </select>
+              </div>
+              <div class="md:col-span-2 lg:col-span-4 flex gap-3 pt-2">
+                <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 flex-1">
+                  <span>💾</span> Simpan User
+                </button>
+                <button type="button" onclick="resetUserForm()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
+                  Batal
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+            <div class="flex items-center justify-between mb-5">
+              <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">👨‍💼 Daftar Pengguna</h3>
+              <button type="button" id="show-user-form-btn" onclick="toggleUserFormVisibility()" 
+                class="btn-secondary text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 text-sm">
+                ➕ Tambah User
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-orange-100 border-b-2 border-orange-300">
+                    <th class="px-4 py-3 text-left text-gray-800 font-bold">👤 Nama</th>
+                    <th class="px-4 py-3 text-left text-gray-800 font-bold">📧 Username</th>
+                    <th class="px-4 py-3 text-left text-gray-800 font-bold">🔐 Level</th>
+                    <th class="px-4 py-3 text-center text-gray-800 font-bold">⚙️ Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table" class="divide-y divide-gray-200">
+                  <tr><td class="px-4 py-6 text-center text-gray-400 col-span-4">Belum ada user</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- REPORT MODULE -->
+        <div id="report-module" class="module-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+            <div class="lg:col-span-3 bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+              <h3 class="font-bold text-lg text-gray-800 mb-5 flex items-center gap-2">
+                <span>🖨️</span> Filter Laporan PDF
+              </h3>
+              <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">📍 Pilih Cabang *</label>
+                    <select id="report-cabang" required
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                      <option value="">Pilih Cabang</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200 mb-4">
+                  <p class="text-sm font-semibold text-gray-800 mb-3">📊 Pilih Data yang Akan Diambil:</p>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="flex items-center gap-3 cursor-pointer p-2 bg-white rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200 transition">
+                      <input type="checkbox" id="report-pengerja" class="w-5 h-5 text-orange-600 rounded" checked>
+                      <span class="text-sm font-medium">🙏 Biodata Pengerja</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 bg-white rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200 transition">
+                      <input type="checkbox" id="report-jemaat" class="w-5 h-5 text-orange-600 rounded" checked>
+                      <span class="text-sm font-medium">👥 Biodata Jemaat</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 bg-white rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200 transition">
+                      <input type="checkbox" id="report-kegiatan" class="w-5 h-5 text-orange-600 rounded" checked>
+                      <span class="text-sm font-medium">📅 Data Kegiatan</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 bg-white rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200 transition">
+                      <input type="checkbox" id="report-keuangan" class="w-5 h-5 text-orange-600 rounded" checked>
+                      <span class="text-sm font-medium">💰 Laporan Keuangan</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 bg-white rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200 transition">
+                      <input type="checkbox" id="report-surat" class="w-5 h-5 text-orange-600 rounded" checked>
+                      <span class="text-sm font-medium">📨 Data Surat</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer p-2 bg-white rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200 transition">
+                      <input type="checkbox" id="report-kehadiran" class="w-5 h-5 text-orange-600 rounded" checked>
+                      <span class="text-sm font-medium">✅ Data Kehadiran</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t-2 border-gray-200 pt-4">
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">📅 Tanggal Mulai</label>
+                    <input type="date" id="report-start-date" 
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">📅 Tanggal Akhir</label>
+                    <input type="date" id="report-end-date" 
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                  </div>
+                </div>
+
+                <div class="flex gap-3 pt-4 border-t-2 border-gray-200">
+                  <button type="button" onclick="generateReportPDF()" class="flex-1 btn-primary text-white px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2">
+                    <span>📄</span> Generate & Download PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-6 shadow-md border border-orange-300">
+              <p class="text-sm text-gray-800 font-medium mb-3">📋 Info:</p>
+              <ul class="text-xs text-gray-700 space-y-2">
+                <li>✓ Laporan otomatis sesuai rentang tanggal</li>
+                <li>✓ Format PDF siap diunduh</li>
+                <li>✓ Data terfilter per cabang</li>
+                <li>✓ Laporan profesional siap pakai</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="report-status" class="hidden bg-green-50 border border-green-200 rounded-lg p-4 text-green-700 text-center">
+            ✅ Laporan PDF berhasil diunduh!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="cabang-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl fade-in border border-orange-200">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">📍 Tambah Cabang</h3>
+        <form id="cabang-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Cabang *</label>
+            <input type="text" id="cabang-nama" required placeholder="Nama cabang" 
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+          </div>
+          <div class="flex gap-3">
+            <button type="button" onclick="closeCabangModal()" class="flex-1 py-2 px-4 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition">
+              Batal
+            </button>
+            <button type="submit" class="flex-1 py-2 px-4 btn-primary text-white rounded-lg font-semibold">
+              Simpan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="delete-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl fade-in border border-red-200">
+        <div class="text-center">
+          <div class="text-6xl mb-4">🗑️</div>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Data?</h3>
+          <p id="delete-name" class="text-gray-600 mb-6 font-medium">Apakah Anda yakin?</p>
+          <div class="flex gap-3">
+            <button type="button" onclick="cancelDelete()" class="flex-1 py-2 px-4 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition">
+              Batal
+            </button>
+            <button type="button" onclick="confirmDelete()" class="flex-1 py-2 px-4 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition">
+              Hapus
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="loading-overlay" class="hidden fixed inset-0 bg-white/80 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div class="text-center">
+        <div class="w-16 h-16 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin mx-auto mb-4"></div>
+        <p class="text-gray-700 font-semibold">Memproses...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allData = [];
+    let currentUser = null;
+    let currentModule = 'beranda';
+    let currentCabang = null;
+    let currentDeleteTarget = null;
+    let currentEditingId = null;
+    let currentEditingType = null;
+
+    const DEMO_USERS = [
+      { username: 'admin', password: 'admin123', level_akses: 'admin', nama_user: 'Administrator' },
+      { username: 'user', password: 'user123', level_akses: 'user', cabang_akses: 'cab_1', nama_user: 'User Gereja' }
+    ];
+
+    const WORSHIP_TYPES = [
+      'Ibadah Raya',
+      'Ibadah Tengah Minggu',
+      'Ibadah Kaum Ibu',
+      'Ibadah Kaum Bapak',
+      'Ibadah Sekolah Minggu',
+      'Ibadah Kaum Remaja',
+      'Ibadah Kaum Muda'
+    ];
+
+    const dataHandler = {
+      onDataChanged: (data) => {
+        allData = data;
+        updateUI();
+      }
+    };
+
+    async function init() {
+      if (window.dataSdk) await window.dataSdk.init(dataHandler);
+
+      document.getElementById('login-form').addEventListener('submit', handleLogin);
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      document.getElementById('pengerja-form').addEventListener('submit', handlePengerjaSubmit);
+      document.getElementById('jemaat-form').addEventListener('submit', handleJemaatSubmit);
+      document.getElementById('kegiatan-form').addEventListener('submit', handleKegiatanSubmit);
+      document.getElementById('surat-form').addEventListener('submit', handleSuratSubmit);
+      document.getElementById('kehadiran-form').addEventListener('submit', handleKehadiranSubmit);
+      document.getElementById('cabang-form').addEventListener('submit', handleAddCabang);
+      document.getElementById('kas-form').addEventListener('submit', handleKasSubmit);
+      document.getElementById('keluar-form').addEventListener('submit', handleKeluarSubmit);
+      document.getElementById('user-form').addEventListener('submit', handleUserSubmit);
+
+      document.getElementById('search-cabang').addEventListener('change', performSearch);
+      document.querySelectorAll('input[name="search-type"]').forEach(checkbox => {
+        checkbox.addEventListener('change', performSearch);
+      });
+      document.getElementById('search-keyword').addEventListener('keyup', performSearch);
+
+      // Set today's date as default
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('report-start-date').value = today;
+      document.getElementById('report-end-date').value = today;
+    }
+
+    init();
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+
+      let user = DEMO_USERS.find(u => u.username === username && u.password === password);
+
+      if (user) {
+        currentUser = user;
+        if (user.level_akses === 'user' && !currentCabang) {
+          currentCabang = user.cabang_akses;
+        }
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        updateUserInfo();
+        updateUI();
+      } else {
+        const errorEl = document.getElementById('login-error');
+        errorEl.classList.remove('hidden');
+        setTimeout(() => errorEl.classList.add('hidden'), 3000);
+      }
+    }
+
+    function handleLogout(e) {
+      e.preventDefault();
+      currentUser = null;
+      currentCabang = null;
+      document.getElementById('dashboard').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('login-form').reset();
+      document.getElementById('login-error').classList.add('hidden');
+    }
+
+    function isAdmin() {
+      return currentUser && currentUser.level_akses === 'admin';
+    }
+
+    function updateUserInfo() {
+      document.getElementById('user-name').textContent = currentUser.nama_user;
+      document.getElementById('user-level').textContent = currentUser.level_akses === 'admin' ? '👑 Admin' : '👤 User';
+
+      if (isAdmin()) {
+        document.getElementById('add-cabang-btn').classList.remove('hidden');
+        document.getElementById('pengerja-form-container').classList.remove('hidden');
+        document.getElementById('jemaat-form-container').classList.remove('hidden');
+        document.getElementById('kegiatan-form-container').classList.remove('hidden');
+        document.getElementById('keuangan-form-container').classList.remove('hidden');
+        document.getElementById('keuangan-keluar-container').classList.remove('hidden');
+        document.getElementById('surat-form-container').classList.remove('hidden');
+        document.getElementById('kehadiran-form-container').classList.remove('hidden');
+        document.getElementById('kegiatan-aksi-header').classList.remove('hidden');
+        document.getElementById('user-form-container').classList.remove('hidden');
+        document.getElementById('users-tab').classList.remove('hidden');
+        document.getElementById('report-tab').classList.remove('hidden');
+      } else {
+        document.getElementById('add-cabang-btn').classList.add('hidden');
+        document.getElementById('pengerja-form-container').classList.add('hidden');
+        document.getElementById('jemaat-form-container').classList.add('hidden');
+        document.getElementById('kegiatan-form-container').classList.add('hidden');
+        document.getElementById('keuangan-form-container').classList.add('hidden');
+        document.getElementById('keuangan-keluar-container').classList.add('hidden');
+        document.getElementById('surat-form-container').classList.add('hidden');
+        document.getElementById('kehadiran-form-container').classList.add('hidden');
+        document.getElementById('kegiatan-aksi-header').classList.add('hidden');
+        document.getElementById('user-form-container').classList.add('hidden');
+        document.getElementById('users-tab').classList.add('hidden');
+        document.getElementById('report-tab').classList.add('hidden');
+      }
+    }
+
+    function updateUI() {
+      updateCabangSelector();
+      updateSearchCabangOptions();
+      updateReportCabangOptions();
+      updateStats();
+      renderAllModules();
+    }
+
+    function updateCabangSelector() {
+      const selector = document.getElementById('cabang-selector');
+      selector.innerHTML = '';
+
+      let cabangs = allData.filter(d => d.tipe === 'cabang');
+
+      if (!isAdmin()) {
+        cabangs = cabangs.filter(c => c.cabang_id === currentUser.cabang_akses);
+      }
+
+      if (cabangs.length === 0) {
+        selector.innerHTML = '<span class="text-sm text-gray-600">Belum ada cabang</span>';
+        return;
+      }
+
+      cabangs.forEach(cabang => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `px-4 py-2 rounded-lg font-semibold transition-all ${
+          currentCabang === cabang.cabang_id
+            ? 'btn-primary text-white'
+            : 'bg-white text-gray-700 border border-gray-300 hover:border-orange-400'
+        }`;
+        btn.textContent = cabang.nama_cabang;
+        btn.onclick = () => { currentCabang = cabang.cabang_id; updateUI(); };
+        selector.appendChild(btn);
+      });
+
+      if (!currentCabang && cabangs.length > 0) {
+        currentCabang = cabangs[0].cabang_id;
+      }
+    }
+
+    function updateSearchCabangOptions() {
+      const searchCabangSelect = document.getElementById('search-cabang');
+      const currentValue = searchCabangSelect.value;
+
+      searchCabangSelect.innerHTML = '<option value="">Semua Cabang</option>';
+
+      let cabangs = allData.filter(d => d.tipe === 'cabang');
+
+      if (!isAdmin()) {
+        cabangs = cabangs.filter(c => c.cabang_id === currentUser.cabang_akses);
+      }
+
+      cabangs.forEach(cabang => {
+        const option = document.createElement('option');
+        option.value = cabang.cabang_id;
+        option.textContent = cabang.nama_cabang;
+        searchCabangSelect.appendChild(option);
+      });
+
+      searchCabangSelect.value = currentValue;
+    }
+
+    function updateReportCabangOptions() {
+      const reportCabangSelect = document.getElementById('report-cabang');
+      const currentValue = reportCabangSelect.value;
+
+      reportCabangSelect.innerHTML = '<option value="">Pilih Cabang</option>';
+
+      let cabangs = allData.filter(d => d.tipe === 'cabang');
+
+      if (!isAdmin()) {
+        cabangs = cabangs.filter(c => c.cabang_id === currentUser.cabang_akses);
+      }
+
+      cabangs.forEach(cabang => {
+        const option = document.createElement('option');
+        option.value = cabang.cabang_id;
+        option.textContent = cabang.nama_cabang;
+        reportCabangSelect.appendChild(option);
+      });
+
+      if (currentValue) {
+        reportCabangSelect.value = currentValue;
+      }
+    }
+
+    function updateStats() {
+      if (!currentCabang) return;
+
+      const cabangData = allData.filter(d => d.cabang_id === currentCabang);
+      const pengerja = cabangData.filter(d => d.tipe === 'pengerja').length;
+      const jemaat = cabangData.filter(d => d.tipe === 'jemaat').length;
+      const totalKas = cabangData.filter(d => d.tipe === 'kas').reduce((sum, d) => sum + (d.dana || 0), 0);
+      const totalKeluar = cabangData.filter(d => d.tipe === 'keluar').reduce((sum, d) => sum + (d.dana || 0), 0);
+      const netKas = totalKas - totalKeluar;
+      const suratBulan = cabangData.filter(d => {
+        if (d.tipe !== 'surat') return false;
+        const bulan = new Date().getMonth();
+        const tahun = new Date().getFullYear();
+        const [y, m] = d.tanggal ? d.tanggal.split('-') : ['', ''];
+        return parseInt(m) === bulan + 1 && parseInt(y) === tahun;
+      }).length;
+
+      document.getElementById('stat-pengerja').textContent = pengerja;
+      document.getElementById('stat-jemaat').textContent = jemaat;
+      document.getElementById('stat-dana').textContent = 'Rp ' + Math.max(0, netKas).toLocaleString('id-ID');
+      document.getElementById('stat-surat').textContent = suratBulan;
+    }
+
+    function switchModule(moduleName) {
+      document.querySelectorAll('.module-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(moduleName + '-module')?.classList.remove('hidden');
+
+      document.querySelectorAll('[data-module]').forEach(btn => {
+        btn.classList.remove('nav-active', 'text-white');
+        btn.classList.add('bg-gray-100', 'text-gray-700');
+      });
+      
+      const activeBtn = document.querySelector(`[data-module="${moduleName}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('nav-active', 'text-white');
+        activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
+      }
+
+      currentModule = moduleName;
+    }
+
+    function showAddCabangModal() {
+      document.getElementById('cabang-modal').classList.remove('hidden');
+      document.getElementById('cabang-nama').focus();
+    }
+
+    function closeCabangModal() {
+      document.getElementById('cabang-modal').classList.add('hidden');
+      document.getElementById('cabang-form').reset();
+    }
+
+    async function handleAddCabang(e) {
+      e.preventDefault();
+      const namaCabang = document.getElementById('cabang-nama').value;
+      
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create({
+          tipe: 'cabang',
+          cabang_id: 'cab_' + Date.now(),
+          nama_cabang: namaCabang
+        });
+
+        if (result.isOk) {
+          closeCabangModal();
+        }
+      }
+    }
+
+    function handlePengerjaSubmit(e) {
+      e.preventDefault();
+    }
+
+    function handleJemaatSubmit(e) {
+      e.preventDefault();
+    }
+
+    function handleKegiatanSubmit(e) {
+      e.preventDefault();
+    }
+
+    function handleSuratSubmit(e) {
+      e.preventDefault();
+    }
+
+    function handleKehadiranSubmit(e) {
+      e.preventDefault();
+    }
+
+    function handleKasSubmit(e) {
+      e.preventDefault();
+    }
+
+    function handleKeluarSubmit(e) {
+      e.preventDefault();
+    }
+
+    function handleUserSubmit(e) {
+      e.preventDefault();
+    }
+
+    function resetPengerjaForm() {
+      document.getElementById('pengerja-form').reset();
+      currentEditingId = null;
+    }
+
+    function resetJemaatForm() {
+      document.getElementById('jemaat-form').reset();
+      currentEditingId = null;
+    }
+
+    function resetKegiatanForm() {
+      document.getElementById('kegiatan-form').reset();
+      currentEditingId = null;
+    }
+
+    function resetSuratForm() {
+      document.getElementById('surat-form').reset();
+      currentEditingId = null;
+    }
+
+    function resetKehadiranForm() {
+      document.getElementById('kehadiran-form').reset();
+      currentEditingId = null;
+    }
+
+    function resetUserForm() {
+      document.getElementById('user-form').reset();
+      currentEditingId = null;
+    }
+
+    function resetSearchForm() {
+      document.getElementById('search-cabang').value = '';
+      document.querySelectorAll('input[name="search-type"]').forEach(cb => cb.checked = false);
+      document.getElementById('search-keyword').value = '';
+      performSearch();
+    }
+
+    function performSearch() {
+      const cabangFilter = document.getElementById('search-cabang').value;
+      const keyword = document.getElementById('search-keyword').value.toLowerCase();
+      const typeCheckboxes = document.querySelectorAll('input[name="search-type"]:checked');
+      const selectedTypes = Array.from(typeCheckboxes).map(cb => cb.value);
+
+      let results = allData;
+
+      if (cabangFilter) {
+        results = results.filter(d => d.cabang_id === cabangFilter);
+      }
+
+      if (selectedTypes.length > 0) {
+        results = results.filter(d => selectedTypes.includes(d.tipe));
+      }
+
+      if (keyword) {
+        results = results.filter(d => {
+          const searchableText = [
+            d.nama, d.nama_cabang, d.nomor_surat, d.pengirim,
+            d.jenis_kegiatan, d.keterangan, d.jabatan, d.kategori
+          ].filter(Boolean).join(' ').toLowerCase();
+
+          return searchableText.includes(keyword);
+        });
+      }
+
+      document.getElementById('search-result-count').textContent = results.length;
+      renderSearchResults(results);
+    }
+
+    function renderSearchResults(results) {
+      const container = document.getElementById('search-results');
+
+      if (results.length === 0) {
+        container.innerHTML = '<div class="text-center py-12 text-gray-400">Tidak ada hasil pencarian</div>';
+        return;
+      }
+
+      const grouped = {};
+      results.forEach(item => {
+        if (!grouped[item.tipe]) grouped[item.tipe] = [];
+        grouped[item.tipe].push(item);
+      });
+
+      let html = '';
+      Object.entries(grouped).forEach(([type, items]) => {
+        html += `<div class="bg-white rounded-xl p-4 shadow-sm border border-gray-200"><h4 class="font-semibold text-gray-800 mb-2">${type} (${items.length})</h4>`;
+        items.forEach(item => {
+          html += `<div class="text-sm text-gray-600 ml-4 mb-1">• ${item.nama || item.nama_cabang || item.jenis_kegiatan || item.nomor_surat}</div>`;
+        });
+        html += '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderAllModules() {
+      renderPengerjaList();
+      renderJemaatList();
+      renderAttendanceSummary();
+    }
+
+    function renderPengerjaList() {
+      if (!currentCabang) return;
+
+      const container = document.getElementById('pengerja-list');
+      const cabangData = allData.filter(d => d.cabang_id === currentCabang && d.tipe === 'pengerja');
+
+      if (cabangData.length === 0) {
+        container.innerHTML = '<div class="text-center py-12 text-gray-400">Tidak ada pengerja</div>';
+        return;
+      }
+
+      let html = '';
+      cabangData.forEach((item, index) => {
+        const statusBadge = item.aktif === false ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-semibold">❌ Nonaktif</span>' : '<span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">✅ Aktif</span>';
+        
+        html += `
+          <div class="biodata-card rounded-xl p-5 shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <h4 class="text-lg font-bold text-gray-900">${item.nama || '-'}</h4>
+                <p class="text-sm text-orange-600 font-semibold">${item.jabatan || '-'}</p>
+              </div>
+              <div class="flex gap-2 items-center">
+                ${statusBadge}
+                ${isAdmin() ? `
+                  <button onclick="editPengerja('${item.__backendId}')" class="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded-lg font-semibold transition">✏️ Edit</button>
+                  <button onclick="togglePengerjaStatus('${item.__backendId}', ${item.aktif !== false})" class="text-xs ${item.aktif === false ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'} px-3 py-1 rounded-lg font-semibold transition">${item.aktif === false ? '🔄 Aktifkan' : '⛔ Nonaktifkan'}</button>
+                ` : ''}
+              </div>
+            </div>
+            <div class="space-y-2">
+              <div class="biodata-row">
+                <span class="biodata-label">📞 Telepon:</span>
+                <span class="biodata-value">${item.telepon || '-'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      // Update stats
+      const pendeta = cabangData.filter(d => d.jabatan === 'Pendeta').length;
+      const pendetaMuda = cabangData.filter(d => d.jabatan === 'Pendeta Muda').length;
+      const sintua = cabangData.filter(d => d.jabatan === 'Sintua').length;
+      const pembela = cabangData.filter(d => d.jabatan === 'Pembela Sidang').length;
+
+      document.getElementById('peng-total').textContent = cabangData.length;
+      document.getElementById('peng-pendeta').textContent = pendeta;
+      document.getElementById('peng-pendeta-muda').textContent = pendetaMuda;
+      document.getElementById('peng-sintua').textContent = sintua;
+      document.getElementById('peng-pembela').textContent = pembela;
+
+      container.innerHTML = html;
+    }
+
+    function renderJemaatList() {
+      if (!currentCabang) return;
+
+      const container = document.getElementById('jemaat-list');
+      const cabangData = allData.filter(d => d.cabang_id === currentCabang && d.tipe === 'jemaat');
+
+      if (cabangData.length === 0) {
+        container.innerHTML = '<div class="text-center py-12 text-gray-400">Tidak ada jemaat</div>';
+        return;
+      }
+
+      let html = '';
+      cabangData.forEach((item, index) => {
+        const statusBadge = item.aktif === false ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-semibold">❌ Nonaktif</span>' : '<span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">✅ Aktif</span>';
+        
+        html += `
+          <div class="biodata-card rounded-xl p-5 shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <h4 class="text-lg font-bold text-gray-900">${item.nama || '-'}</h4>
+                <p class="text-sm text-green-600 font-semibold">${item.kategori || '-'}</p>
+              </div>
+              <div class="flex gap-2 items-center">
+                ${statusBadge}
+                ${isAdmin() ? `
+                  <button onclick="editJemaat('${item.__backendId}')" class="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded-lg font-semibold transition">✏️ Edit</button>
+                  <button onclick="toggleJemaatStatus('${item.__backendId}', ${item.aktif !== false})" class="text-xs ${item.aktif === false ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'} px-3 py-1 rounded-lg font-semibold transition">${item.aktif === false ? '🔄 Aktifkan' : '⛔ Nonaktifkan'}</button>
+                ` : ''}
+              </div>
+            </div>
+            <div class="space-y-2">
+              <div class="biodata-row">
+                <span class="biodata-label">📞 Telepon:</span>
+                <span class="biodata-value">${item.telepon || '-'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      // Update stats
+      const ibu = cabangData.filter(d => d.kategori === 'Kaum Ibu').length;
+      const bapak = cabangData.filter(d => d.kategori === 'Kaum Bapak').length;
+      const anak = cabangData.filter(d => d.kategori === 'Anak-anak').length;
+
+      document.getElementById('jem-total').textContent = cabangData.length;
+      document.getElementById('jem-ibu').textContent = ibu;
+      document.getElementById('jem-bapak').textContent = bapak;
+      document.getElementById('jem-anak').textContent = anak;
+
+      container.innerHTML = html;
+    }
+
+    function renderAttendanceSummary() {
+      if (!currentCabang) return;
+
+      const container = document.getElementById('attendance-summary');
+      const cabangData = allData.filter(d => d.cabang_id === currentCabang && d.tipe === 'kehadiran');
+
+      if (cabangData.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-gray-400">Belum ada data kehadiran</div>';
+        return;
+      }
+
+      // Group by worship type
+      const summaryByType = {};
+      WORSHIP_TYPES.forEach(type => {
+        summaryByType[type] = {
+          total: 0,
+          count: 0,
+          totalPersembahan: 0
+        };
+      });
+
+      cabangData.forEach(item => {
+        const type = item.jenis_ibadah || 'Lainnya';
+        if (!summaryByType[type]) {
+          summaryByType[type] = { total: 0, count: 0, totalPersembahan: 0 };
+        }
+        summaryByType[type].total += item.jumlah_hadir || 0;
+        summaryByType[type].count += 1;
+        summaryByType[type].totalPersembahan += item.persembahan || 0;
+      });
+
+      let html = '';
+      Object.entries(summaryByType).forEach(([type, data]) => {
+        if (data.count === 0) return;
+        
+        const avgHadir = data.count > 0 ? Math.round(data.total / data.count) : 0;
+        html += `
+          <div class="attendance-card">
+            <div class="font-semibold text-gray-800">${type}</div>
+            <div class="text-sm">
+              <span class="text-gray-600">Rata-rata: </span>
+              <span class="font-bold text-orange-600">${avgHadir} orang</span>
+            </div>
+            <div class="text-sm text-right">
+              <span class="text-gray-600">Persembahan: </span>
+              <span class="font-bold text-green-600">Rp ${data.totalPersembahan.toLocaleString('id-ID')}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html || '<div class="text-center py-8 text-gray-400">Belum ada data kehadiran</div>';
+    }
+
+    function editPengerja(id) {
+      alert('Fitur edit pengerja akan segera tersedia');
+    }
+
+    function togglePengerjaStatus(id, currentStatus) {
+      alert('Fitur toggle status pengerja akan segera tersedia');
+    }
+
+    function editJemaat(id) {
+      alert('Fitur edit jemaat akan segera tersedia');
+    }
+
+    function toggleJemaatStatus(id, currentStatus) {
+      alert('Fitur toggle status jemaat akan segera tersedia');
+    }
+
+    function toggleUserFormVisibility() {
+      const container = document.getElementById('user-form-container');
+      container.classList.toggle('hidden');
+    }
+
+    function cancelDelete() {
+      document.getElementById('delete-modal').classList.add('hidden');
+      currentDeleteTarget = null;
+    }
+
+    function confirmDelete() {
+      cancelDelete();
+    }
+
+    // ========== REPORT PDF FUNCTIONS ==========
+    async function generateReportPDF() {
+      const selectedCabang = document.getElementById('report-cabang').value;
+      
+      if (!selectedCabang) {
+        alert('Silakan pilih cabang terlebih dahulu!');
+        return;
+      }
+
+      document.getElementById('loading-overlay').classList.remove('hidden');
+
+      try {
+        const startDate = document.getElementById('report-start-date').value;
+        const endDate = document.getElementById('report-end-date').value;
+
+        const includePengerja = document.getElementById('report-pengerja').checked;
+        const includeJemaat = document.getElementById('report-jemaat').checked;
+        const includeKegiatan = document.getElementById('report-kegiatan').checked;
+        const includeKeuangan = document.getElementById('report-keuangan').checked;
+        const includeSurat = document.getElementById('report-surat').checked;
+        const includeKehadiran = document.getElementById('report-kehadiran').checked;
+
+        const cabang = allData.find(d => d.tipe === 'cabang' && d.cabang_id === selectedCabang);
+        const cabangName = cabang ? cabang.nama_cabang : 'Semua Cabang';
+
+        const cabangData = allData.filter(d => d.cabang_id === selectedCabang);
+
+        const filterByDateRange = (item) => {
+          if (!item.tanggal) return true;
+          const itemDate = new Date(item.tanggal);
+          const start = new Date(startDate);
+          const end = new Date(endDate);
+          end.setHours(23, 59, 59);
+          return itemDate >= start && itemDate <= end;
+        };
+
+        let htmlContent = `
+          <div style="font-family: Arial, sans-serif; background: white; padding: 40px;">
+            <div style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #7c2d12; padding-bottom: 20px;">
+              <h2 style="color: #7c2d12; margin: 0; font-size: 28px; font-weight: bold;">⛪ GEREJA PENTAKOSTA</h2>
+              <p style="color: #b45309; font-size: 18px; font-weight: bold; margin: 10px 0;">Cabang: ${cabangName}</p>
+              <p style="color: #666; font-size: 14px; margin: 5px 0;">Laporan Manajemen Gereja</p>
+              <p style="color: #999; font-size: 12px; margin: 5px 0;">Periode: ${new Date(startDate).toLocaleDateString('id-ID')} - ${new Date(endDate).toLocaleDateString('id-ID')}</p>
+              <p style="color: #999; font-size: 12px; margin: 5px 0;">Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}</p>
+            </div>
+        `;
+
+        // PENGERJA SECTION
+        if (includePengerja) {
+          const pengerjaData = cabangData.filter(d => d.tipe === 'pengerja');
+          if (pengerjaData.length > 0) {
+            htmlContent += `
+              <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                <h3 style="color: #7c2d12; border-bottom: 2px solid #b45309; padding-bottom: 10px; font-size: 16px; margin-bottom: 15px;">🙏 BIODATA PENGERJA</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                  <thead>
+                    <tr style="background: #f3f4f6;">
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">No</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Nama Lengkap</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Jabatan</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Telepon</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+            pengerjaData.forEach((item, index) => {
+              htmlContent += `
+                <tr>
+                  <td style="border: 1px solid #000; padding: 8px;">${index + 1}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.nama || '-'}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.jabatan || '-'}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.telepon || '-'}</td>
+                </tr>
+              `;
+            });
+            htmlContent += `
+                  </tbody>
+                </table>
+                <p style="color: #999; font-size: 11px; margin-top: 8px; font-style: italic;">Total Pengerja: ${pengerjaData.length}</p>
+              </div>
+            `;
+          }
+        }
+
+        // JEMAAT SECTION
+        if (includeJemaat) {
+          const jemaatData = cabangData.filter(d => d.tipe === 'jemaat');
+          if (jemaatData.length > 0) {
+            htmlContent += `
+              <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                <h3 style="color: #16a34a; border-bottom: 2px solid #22c55e; padding-bottom: 10px; font-size: 16px; margin-bottom: 15px;">👥 BIODATA JEMAAT</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                  <thead>
+                    <tr style="background: #f3f4f6;">
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">No</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Nama Lengkap</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Kategori</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Telepon</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+            jemaatData.forEach((item, index) => {
+              htmlContent += `
+                <tr>
+                  <td style="border: 1px solid #000; padding: 8px;">${index + 1}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.nama || '-'}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.kategori || '-'}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.telepon || '-'}</td>
+                </tr>
+              `;
+            });
+            htmlContent += `
+                  </tbody>
+                </table>
+                <p style="color: #999; font-size: 11px; margin-top: 8px; font-style: italic;">Total Jemaat: ${jemaatData.length}</p>
+              </div>
+            `;
+          }
+        }
+
+        // KEGIATAN SECTION
+        if (includeKegiatan) {
+          const kegiatanData = cabangData.filter(d => d.tipe === 'kegiatan' && filterByDateRange(d));
+          if (kegiatanData.length > 0) {
+            htmlContent += `
+              <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                <h3 style="color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; font-size: 16px; margin-bottom: 15px;">📅 DATA KEGIATAN</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                  <thead>
+                    <tr style="background: #f3f4f6;">
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">No</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Tanggal</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Jenis Kegiatan</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: right; font-weight: bold;">Anggaran (Rp)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+            kegiatanData.forEach((item, index) => {
+              const tanggal = new Date(item.tanggal).toLocaleDateString('id-ID');
+              htmlContent += `
+                <tr>
+                  <td style="border: 1px solid #000; padding: 8px;">${index + 1}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${tanggal}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.jenis_kegiatan || '-'}</td>
+                  <td style="border: 1px solid #000; padding: 8px; text-align: right;">Rp ${(item.dana || 0).toLocaleString('id-ID')}</td>
+                </tr>
+              `;
+            });
+            htmlContent += `
+                  </tbody>
+                </table>
+                <p style="color: #999; font-size: 11px; margin-top: 8px; font-style: italic;">Total Kegiatan: ${kegiatanData.length}</p>
+              </div>
+            `;
+          }
+        }
+
+        // KEUANGAN SECTION
+        if (includeKeuangan) {
+          const masukData = cabangData.filter(d => d.tipe === 'kas' && filterByDateRange(d));
+          const keluarData = cabangData.filter(d => d.tipe === 'keluar' && filterByDateRange(d));
+          
+          const totalMasuk = masukData.reduce((sum, d) => sum + (d.dana || 0), 0);
+          const totalKeluar = keluarData.reduce((sum, d) => sum + (d.dana || 0), 0);
+          const saldoBersih = totalMasuk - totalKeluar;
+
+          if (masukData.length > 0 || keluarData.length > 0) {
+            htmlContent += `
+              <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                <h3 style="color: #7c2d12; border-bottom: 2px solid #b45309; padding-bottom: 10px; font-size: 16px; margin-bottom: 15px;">💰 LAPORAN KEUANGAN</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                  <div style="background: #dcfce7; border: 1px solid #86efac; padding: 15px; border-radius: 8px;">
+                    <p style="color: #666; font-size: 12px; font-weight: bold; margin: 0 0 5px 0;">Total Masuk</p>
+                    <p style="color: #16a34a; font-size: 18px; font-weight: bold; margin: 0;">Rp ${totalMasuk.toLocaleString('id-ID')}</p>
+                  </div>
+                  <div style="background: #fee2e2; border: 1px solid #fca5a5; padding: 15px; border-radius: 8px;">
+                    <p style="color: #666; font-size: 12px; font-weight: bold; margin: 0 0 5px 0;">Total Keluar</p>
+                    <p style="color: #dc2626; font-size: 18px; font-weight: bold; margin: 0;">Rp ${totalKeluar.toLocaleString('id-ID')}</p>
+                  </div>
+                  <div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 15px; border-radius: 8px;">
+                    <p style="color: #666; font-size: 12px; font-weight: bold; margin: 0 0 5px 0;">Saldo Bersih</p>
+                    <p style="color: #1e40af; font-size: 18px; font-weight: bold; margin: 0;">Rp ${saldoBersih.toLocaleString('id-ID')}</p>
+                  </div>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                  <thead>
+                    <tr style="background: #f3f4f6;">
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Jenis</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Keterangan</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: right; font-weight: bold;">Nominal (Rp)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+            masukData.forEach((item) => {
+              htmlContent += `
+                <tr>
+                  <td style="border: 1px solid #000; padding: 8px;">Masuk</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.keterangan || '-'}</td>
+                  <td style="border: 1px solid #000; padding: 8px; text-align: right;">Rp ${(item.dana || 0).toLocaleString('id-ID')}</td>
+                </tr>
+              `;
+            });
+            keluarData.forEach((item) => {
+              htmlContent += `
+                <tr>
+                  <td style="border: 1px solid #000; padding: 8px;">Keluar</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.keterangan || '-'}</td>
+                  <td style="border: 1px solid #000; padding: 8px; text-align: right;">Rp ${(item.dana || 0).toLocaleString('id-ID')}</td>
+                </tr>
+              `;
+            });
+            htmlContent += `
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+        }
+
+        // SURAT SECTION
+        if (includeSurat) {
+          const suratData = cabangData.filter(d => d.tipe === 'surat' && filterByDateRange(d));
+          if (suratData.length > 0) {
+            htmlContent += `
+              <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                <h3 style="color: #ca8a04; border-bottom: 2px solid #eab308; padding-bottom: 10px; font-size: 16px; margin-bottom: 15px;">📨 DATA SURAT</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                  <thead>
+                    <tr style="background: #f3f4f6;">
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">No</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Tanggal</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Nomor Surat</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Pengirim/Tujuan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+            suratData.forEach((item, index) => {
+              const tanggal = new Date(item.tanggal).toLocaleDateString('id-ID');
+              htmlContent += `
+                <tr>
+                  <td style="border: 1px solid #000; padding: 8px;">${index + 1}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${tanggal}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.nomor_surat || '-'}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.pengirim || '-'}</td>
+                </tr>
+              `;
+            });
+            htmlContent += `
+                  </tbody>
+                </table>
+                <p style="color: #999; font-size: 11px; margin-top: 8px; font-style: italic;">Total Surat: ${suratData.length}</p>
+              </div>
+            `;
+          }
+        }
+
+        // KEHADIRAN SECTION
+        if (includeKehadiran) {
+          const kehadiranData = cabangData.filter(d => d.tipe === 'kehadiran' && filterByDateRange(d));
+          if (kehadiranData.length > 0) {
+            htmlContent += `
+              <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                <h3 style="color: #16a34a; border-bottom: 2px solid #22c55e; padding-bottom: 10px; font-size: 16px; margin-bottom: 15px;">✅ DATA KEHADIRAN IBADAH</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                  <thead>
+                    <tr style="background: #f3f4f6;">
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">No</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Tanggal</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: left; font-weight: bold;">Jenis Ibadah</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: center; font-weight: bold;">Jumlah Hadir</th>
+                      <th style="border: 1px solid #000; padding: 10px; text-align: right; font-weight: bold;">Persembahan (Rp)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+            kehadiranData.forEach((item, index) => {
+              const tanggal = new Date(item.tanggal).toLocaleDateString('id-ID');
+              htmlContent += `
+                <tr>
+                  <td style="border: 1px solid #000; padding: 8px;">${index + 1}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${tanggal}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">${item.jenis_ibadah || '-'}</td>
+                  <td style="border: 1px solid #000; padding: 8px; text-align: center;">${item.jumlah_hadir || 0}</td>
+                  <td style="border: 1px solid #000; padding: 8px; text-align: right;">Rp ${(item.persembahan || 0).toLocaleString('id-ID')}</td>
+                </tr>
+              `;
+            });
+            htmlContent += `
+                  </tbody>
+                </table>
+                <p style="color: #999; font-size: 11px; margin-top: 8px; font-style: italic;">Total Data Kehadiran: ${kehadiranData.length}</p>
+              </div>
+            `;
+          }
+        }
+
+        htmlContent += `
+            <div style="text-align: center; margin-top: 40px; border-top: 2px solid #7c2d12; padding-top: 20px;">
+              <p style="color: #666; font-size: 11px; margin: 5px 0;">Laporan ini dihasilkan oleh Sistem Manajemen Gereja Pentakosta</p>
+              <p style="color: #999; font-size: 10px; margin: 5px 0;">© Gereja Pentakosta - Semua Hak Dilindungi</p>
+            </div>
+          </div>
+        `;
+
+        // Generate PDF
+        const element = document.createElement('div');
+        element.innerHTML = htmlContent;
+
+        const opt = {
+          margin: 10,
+          filename: `Laporan-${cabangName}-${new Date(startDate).toISOString().split('T')[0]}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+
+        document.getElementById('report-status').classList.remove('hidden');
+        setTimeout(() => {
+          document.getElementById('report-status').classList.add('hidden');
+        }, 3000);
+
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('Terjadi kesalahan saat membuat laporan PDF');
+      } finally {
+        document.getElementById('loading-overlay').classList.add('hidden');
+      }
+    }
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cf3c14e23ed4dd4',t:'MTc3MTMxNTI2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
